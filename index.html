@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>信通院会宣传部 · 2026 招新</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-black: #000000;
+            --surface-dark: #0d0d11;
+            --apple-gray: #86868b;
+            --apple-light-gray: #f5f5f7;
+            --accent-cyan: #2997ff;
+            --card-glass: rgba(255, 255, 255, 0.04);
+            --border-specular: rgba(255, 255, 255, 0.14);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", "PingFang SC", sans-serif;
+            background-color: var(--bg-black);
+            color: var(--apple-light-gray);
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 120px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 🍎 苹果级海报动态漫反射背景 */
+        .ambient-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bg-poster {
+            position: absolute;
+            top: -15%;
+            left: -15%;
+            width: 130%;
+            height: 130%;
+            object-fit: cover;
+            /* 超大半径高斯模糊 + 增强色彩饱和度 + 深度调暗 */
+            filter: blur(85px) saturate(160%) brightness(0.38);
+            transform: scale(1.05);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 12s ease-in-out infinite alternate;
+            animation: slowBreath 12s infinite alternate ease-in-out;
+        }
+
+        @keyframes slowBreath {
+            0% { transform: scale(1.05) translate(0, 0); }
+            100% { transform: scale(1.15) translate(-2%, 2%); }
+        }
+
+        /* 电影级暗角遮罩，保证主体清晰与层次 */
+        .ambient-vignette {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 40%, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.85) 100%),
+                        linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.7) 100%);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 40px 20px 0;
+            position: relative;
+            z-index: 1;
+            perspective: 1200px;
+        }
+
+        /* 顶部标签 - Apple Pill */
+        .apple-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 980px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #ffffff;
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            margin-bottom: 18px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        /* 钛金属高光渐变标题 */
+        .hero-title {
+            font-size: 2.3rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            line-height: 1.15;
+            background: linear-gradient(180deg, #FFFFFF 0%, #A1A1A6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .hero-sub {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.65);
+            font-weight: 400;
+            letter-spacing: -0.2px;
+        }
+
+        /* iOS 原生级分段切换器 (Segmented Control) */
+        .segmented-control {
+            position: relative;
+            display: flex;
+            background: rgba(0, 0, 0, 0.45);
+            border-radius: 14px;
+            padding: 3px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .segmented-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: calc(50% - 3px);
+            height: calc(100% - 6px);
+            background: rgba(255, 255, 255, 0.22);
+            border-radius: 11px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4), inset 0 0.5px 0.5px rgba(255,255,255,0.5);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+
+        .segment-btn {
+            flex: 1;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.65);
+            cursor: pointer;
+            z-index: 2;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .segment-btn.active {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        /* 3D 悬浮高透海报卡片 (具有动态光线追踪模拟) */
+        .card-container {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.15s ease-out;
+            border-radius: 24px;
+        }
+
+        .poster-card {
+            position: relative;
+            border-radius: 24px;
+            padding: 7px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.03) 40%, rgba(255,255,255,0.12) 100%);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85), 0 0 50px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        /* 模拟超瓷晶玻璃表面的高光流动层 */
+        .glass-specular {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 24px;
+            background: radial-gradient(
+                circle 400px at var(--light-x, 50%) var(--light-y, 0%),
+                rgba(255, 255, 255, 0.28) 0%,
+                rgba(255, 255, 255, 0) 60%
+            );
+            pointer-events: none;
+            z-index: 5;
+            transition: opacity 0.3s;
+        }
+
+        .poster-inner {
+            position: relative;
+            border-radius: 18px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .poster-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 18px;
+            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .poster-img.switching {
+            opacity: 0;
+            transform: scale(0.98);
+        }
+
+        /* 苹果风格的触控提示标签 */
+        .floating-badge {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 0.5px solid rgba(255, 255, 255, 0.25);
+            color: #f5f5f7;
+            font-size: 0.72rem;
+            padding: 6px 14px;
+            border-radius: 980px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            pointer-events: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            white-space: nowrap;
+        }
+
+        /* 底部苹果设计规范控制栏 (Dock Bar) */
+        .dock-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border-top: 0.5px solid rgba(255, 255, 255, 0.12);
+            display: flex;
+            justify-content: center;
+            z-index: 90;
+        }
+
+        /* 仿 Apple 发布会重点 CTA 按钮 */
+        .btn-apple {
+            width: 100%;
+            max-width: 440px;
+            height: 52px;
+            background: #ffffff;
+            color: #000000;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 980px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 25px rgba(255, 255, 255, 0.18);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            letter-spacing: -0.2px;
+        }
+
+        .btn-apple:active {
+            transform: scale(0.97);
+            background: #e5e5ea;
+        }
+
+        /* 苹果风格全屏弹窗 (iOS Sheet Style) */
+        .apple-sheet {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .sheet-card {
+            background: #1c1c1e;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            width: 100%;
+            max-width: 320px;
+            border-radius: 28px;
+            padding: 30px 24px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 30px 70px rgba(0,0,0,0.8);
+            transform: scale(0.9);
+            animation: sheetIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes sheetIn {
+            to { transform: scale(1); }
+        }
+
+        .sheet-close {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--apple-gray);
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .qr-wrapper {
+            margin: 22px auto 18px;
+            width: 180px;
+            height: 180px;
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        .qr-wrapper img {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        /* 全屏图片预览 */
+        .fullscreen-viewer {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .fullscreen-viewer img {
+            max-width: 100%;
+            max-height: 94vh;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 🍎 动态海报漫反射光影层 -->
+<div class="ambient-backdrop">
+    <img src="poster1.jpg" id="bgPoster" class="bg-poster" alt="环境漫反射光晕">
+    <div class="ambient-vignette"></div>
+</div>
+
+<div class="container">
+    <!-- 苹果风格 Header -->
+    <header class="hero-section">
+        <div class="apple-pill">
+            <i class="fa-solid fa-sparkles" style="color: #64d2ff; font-size: 0.7rem;"></i>
+            <span>ICE Student Union · 2026</span>
+        </div>
+        <h1 class="hero-title">信通院会宣传部</h1>
+        <p class="hero-sub">灵感在此具象，杰作终被注视</p>
+    </header>
+
+    <!-- iOS 物理滑动切换器 -->
+    <div class="segmented-control">
+        <div class="segmented-slider" id="segSlider"></div>
+        <div class="segment-btn active" onclick="switchPoster(1, this)">
+            <i class="fa-solid fa-feather"></i> 灵感 · 程晓恬
+        </div>
+        <div class="segment-btn" onclick="switchPoster(2, this)">
+            <i class="fa-solid fa-camera"></i> 纪实 · 幕后光影
+        </div>
+    </div>
+
+    <!-- 3D 陀螺仪光感展示台 -->
+    <div class="card-container" id="tiltContainer">
+        <div class="poster-card" onclick="openFullscreen()">
+            <!-- 表面光斑反射层 -->
+            <div class="glass-specular" id="specularGlow"></div>
+            
+            <div class="poster-inner">
+                <img src="poster1.jpg" alt="信通宣传部招新海报" id="posterImg" class="poster-img">
+                <div class="floating-badge">
+                    <i class="fa-solid fa-arrow-up-right-and-arrow-down-left-from-center"></i>
+                    <span>轻触展开高精细节</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 底部控制栏 -->
+<div class="dock-bar">
+    <button class="btn-apple" onclick="openSheet()">
+        <span>即刻加入我们</span>
+        <i class="fa-solid fa-chevron-right" style="font-size: 0.75rem;"></i>
+    </button>
+</div>
+
+<!-- 二维码弹窗 -->
+<div class="apple-sheet" id="appleSheet" onclick="closeSheet(event)">
+    <div class="sheet-card">
+        <div class="sheet-close" onclick="forceCloseSheet()"><i class="fa-solid fa-xmark"></i></div>
+        <h3 style="font-size: 1.2rem; font-weight: 600; letter-spacing: -0.3px;">加入信通宣传部</h3>
+        <p style="font-size: 0.8rem; color: var(--apple-gray); margin-top: 4px;">扫码进入 2026 招新官方咨询群</p>
+        
+        <div class="qr-wrapper">
+            <img src="qrcode.jpg" alt="招新群二维码" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div style="display:none; color:#1c1c1e; font-size: 0.8rem; flex-direction:column; align-items:center; gap:6px;">
+                <i class="fa-solid fa-qrcode fa-2x" style="color:#000;"></i>
+                <span>请放置 qrcode.jpg</span>
+            </div>
+        </div>
+
+        <p style="font-size: 0.72rem; color: var(--apple-gray);">无论台前还是幕后，你的杰作都将被看见</p>
+    </div>
+</div>
+
+<!-- 原图查看器 -->
+<div class="fullscreen-viewer" id="viewer" onclick="closeFullscreen()">
+    <img src="poster1.jpg" id="viewerFullImg">
+</div>
+
+<script>
+    let currentPoster = 1;
+    const tiltContainer = document.getElementById('tiltContainer');
+    const specularGlow = document.getElementById('specularGlow');
+    const posterImg = document.getElementById('posterImg');
+    const bgPoster = document.getElementById('bgPoster');
+    const viewerFullImg = document.getElementById('viewerFullImg');
+    const segSlider = document.getElementById('segSlider');
+
+    // 1. 切换逻辑：主卡片 + 背景漫反射同步平滑切换
+    function switchPoster(id, btnElement) {
+        if(currentPoster === id) return;
+        currentPoster = id;
+
+        // 按钮高亮与滑块移动
+        document.querySelectorAll('.segment-btn').forEach(btn => btn.classList.remove('active'));
+        btnElement.classList.add('active');
+        segSlider.style.transform = id === 1 ? 'translateX(0%)' : 'translateX(100%)';
+
+        // 海报微动效切换
+        posterImg.classList.add('switching');
+        bgPoster.style.opacity = '0.3'; // 背景光晕轻微淡出缓冲
+
+        setTimeout(() => {
+            const newSrc = `poster${id}.jpg`;
+            posterImg.src = newSrc;
+            viewerFullImg.src = newSrc;
+            bgPoster.src = newSrc; // 背景光晕换成对应海报
+
+            posterImg.classList.remove('switching');
+            bgPoster.style.opacity = '1';
+        }, 200);
+    }
+
+    // 2. 核心：高级 3D 悬浮与真实光影物理跟踪
+    function handlePointerMove(e) {
+        const rect = tiltContainer.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+        const x = clientX - rect.left;
+        const y = clientY - rect.top;
+
+        // 极限限制在 ±7deg，保持苹果克制质感
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = ((y - centerY) / centerY) * -7;
+        const rotateY = ((x - centerX) / centerX) * 7;
+
+        tiltContainer.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+
+        // 动态光斑追踪
+        specularGlow.style.setProperty('--light-x', `${x}px`);
+        specularGlow.style.setProperty('--light-y', `${y}px`);
+    }
+
+    function resetTilt() {
+        tiltContainer.style.transform = `rotateX(0deg) rotateY(0deg)`;
+    }
+
+    tiltContainer.addEventListener('mousemove', handlePointerMove);
+    tiltContainer.addEventListener('mouseleave', resetTilt);
+    tiltContainer.addEventListener('touchmove', handlePointerMove, {passive: true});
+    tiltContainer.addEventListener('touchend', resetTilt);
+
+    // 3. 弹窗控制
+    function openSheet() {
+        document.getElementById('appleSheet').style.display = 'flex';
+    }
+
+    function forceCloseSheet() {
+        document.getElementById('appleSheet').style.display = 'none';
+    }
+
+    function closeSheet(e) {
+        if(e.target.id === 'appleSheet') forceCloseSheet();
+    }
+
+    function openFullscreen() {
+        document.getElementById('viewer').style.display = 'flex';
+    }
+
+    function closeFullscreen() {
+        document.getElementById('viewer').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>
