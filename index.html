@@ -8,12 +8,10 @@
     <style>
         :root {
             --bg-black: #000000;
-            --surface-dark: #0d0d11;
             --apple-gray: #86868b;
             --apple-light-gray: #f5f5f7;
-            --accent-cyan: #2997ff;
-            --card-glass: rgba(255, 255, 255, 0.04);
-            --border-specular: rgba(255, 255, 255, 0.14);
+            --accent-blue: #2997ff;
+            --holo-glow: rgba(41, 151, 255, 0.35);
         }
 
         * {
@@ -36,7 +34,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* 🍎 苹果级海报动态漫反射背景 */
+        /* 🍎 华丽纯黑背景：海报漫反射 + 深空暗涌 + 微晶星尘 */
         .ambient-backdrop {
             position: fixed;
             top: 0;
@@ -48,80 +46,123 @@
             overflow: hidden;
         }
 
-        .bg-poster {
+        /* 海报环境光层 */
+        .bg-layer {
             position: absolute;
-            top: -15%;
-            left: -15%;
-            width: 130%;
-            height: 130%;
+            top: -20%;
+            left: -20%;
+            width: 140%;
+            height: 140%;
             object-fit: cover;
-            /* 超大半径高斯模糊 + 增强色彩饱和度 + 深度调暗 */
-            filter: blur(85px) saturate(160%) brightness(0.38);
-            transform: scale(1.05);
-            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 12s ease-in-out infinite alternate;
-            animation: slowBreath 12s infinite alternate ease-in-out;
+            filter: blur(100px) saturate(180%) brightness(0.32);
+            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+            animation: breatheAnimation 16s infinite alternate ease-in-out;
         }
 
-        @keyframes slowBreath {
-            0% { transform: scale(1.05) translate(0, 0); }
-            100% { transform: scale(1.15) translate(-2%, 2%); }
+        #bgLayer1 { opacity: 1; }
+        #bgLayer2 { opacity: 0; }
+
+        @keyframes breatheAnimation {
+            0% { transform: scale(1) translate(0, 0); }
+            100% { transform: scale(1.12) translate(-2%, 2%); }
         }
 
-        /* 电影级暗角遮罩，保证主体清晰与层次 */
+        /* 极度克制华丽的深空暗涌光带 */
+        .nebula-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.22;
+            pointer-events: none;
+            animation: nebulaDrift 20s infinite alternate ease-in-out;
+        }
+
+        .nebula-1 {
+            background: radial-gradient(circle, #0051ff, transparent 70%);
+            top: -100px;
+            right: -100px;
+        }
+
+        .nebula-2 {
+            background: radial-gradient(circle, #ffd000, transparent 65%);
+            bottom: 20%;
+            left: -150px;
+            opacity: 0.12;
+            animation-duration: 25s;
+        }
+
+        @keyframes nebulaDrift {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(60px, 80px) scale(1.2); }
+        }
+
+        /* 微晶星芒 Canvas 画布 */
+        #starfieldCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.75;
+        }
+
+        /* 影院级黑曜石暗角遮罩 */
         .ambient-vignette {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at 50% 40%, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.85) 100%),
-                        linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.7) 100%);
+            background: radial-gradient(circle at 50% 35%, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.92) 100%),
+                        linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.88) 100%);
         }
 
         .container {
             width: 100%;
             max-width: 480px;
-            padding: 40px 20px 0;
+            padding: 35px 20px 0;
             position: relative;
             z-index: 1;
-            perspective: 1200px;
+            perspective: 1400px;
         }
 
-        /* 顶部标签 - Apple Pill */
+        /* Apple 药丸微光标签 */
         .apple-pill {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 7px;
             padding: 6px 14px;
             background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 0.5px solid rgba(255, 255, 255, 0.2);
             border-radius: 980px;
-            font-size: 0.75rem;
+            font-size: 0.73rem;
             font-weight: 600;
-            letter-spacing: 1px;
+            letter-spacing: 0.8px;
             text-transform: uppercase;
             color: #ffffff;
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
-            margin-bottom: 18px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            margin-bottom: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
         }
 
         .hero-section {
             text-align: center;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
 
-        /* 钛金属高光渐变标题 */
         .hero-title {
-            font-size: 2.3rem;
+            font-size: 2.35rem;
             font-weight: 700;
-            letter-spacing: -0.5px;
+            letter-spacing: -0.6px;
             line-height: 1.15;
-            background: linear-gradient(180deg, #FFFFFF 0%, #A1A1A6 100%);
+            background: linear-gradient(180deg, #FFFFFF 20%, #A1A1A6 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .hero-sub {
@@ -131,18 +172,18 @@
             letter-spacing: -0.2px;
         }
 
-        /* iOS 原生级分段切换器 (Segmented Control) */
+        /* iOS 原生级分段切换器 */
         .segmented-control {
             position: relative;
             display: flex;
-            background: rgba(0, 0, 0, 0.45);
+            background: rgba(0, 0, 0, 0.55);
             border-radius: 14px;
             padding: 3px;
-            margin-bottom: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin-bottom: 22px;
+            border: 0.5px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(35px);
+            -webkit-backdrop-filter: blur(35px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
         }
 
         .segmented-slider {
@@ -153,8 +194,8 @@
             height: calc(100% - 6px);
             background: rgba(255, 255, 255, 0.22);
             border-radius: 11px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4), inset 0 0.5px 0.5px rgba(255,255,255,0.5);
-            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4), inset 0 0.5px 0.5px rgba(255,255,255,0.6);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             pointer-events: none;
         }
 
@@ -179,38 +220,50 @@
             font-weight: 600;
         }
 
-        /* 3D 悬浮高透海报卡片 (具有动态光线追踪模拟) */
+        /* 3D 物理响应展示台 */
         .card-container {
             position: relative;
             transform-style: preserve-3d;
-            transition: transform 0.15s ease-out;
+            transition: transform 0.2s cubic-bezier(0.1, 0.8, 0.2, 1);
             border-radius: 24px;
+            will-change: transform;
         }
 
         .poster-card {
             position: relative;
             border-radius: 24px;
             padding: 7px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.03) 40%, rgba(255,255,255,0.12) 100%);
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85), 0 0 50px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(135deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.03) 40%, rgba(255,255,255,0.12) 100%);
+            box-shadow: var(--shadow-x, 0px) var(--shadow-y, 30px) 70px rgba(0, 0, 0, 0.9), 
+                        0 0 45px rgba(41, 151, 255, 0.15);
             overflow: hidden;
             cursor: pointer;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
+            transition: box-shadow 0.2s cubic-bezier(0.1, 0.8, 0.2, 1);
         }
 
-        /* 模拟超瓷晶玻璃表面的高光流动层 */
         .glass-specular {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             border-radius: 24px;
-            background: radial-gradient(
-                circle 400px at var(--light-x, 50%) var(--light-y, 0%),
-                rgba(255, 255, 255, 0.28) 0%,
-                rgba(255, 255, 255, 0) 60%
-            );
+            background: 
+                radial-gradient(
+                    circle 380px at var(--light-x, 50%) var(--light-y, 0%),
+                    rgba(255, 255, 255, 0.35) 0%,
+                    rgba(255, 255, 255, 0.05) 45%,
+                    rgba(255, 255, 255, 0) 70%
+                ),
+                linear-gradient(
+                    var(--angle, 115deg),
+                    transparent 25%,
+                    rgba(130, 220, 255, 0.15) 45%,
+                    rgba(255, 180, 240, 0.18) 50%,
+                    rgba(255, 230, 150, 0.15) 55%,
+                    transparent 75%
+                );
             pointer-events: none;
             z-index: 5;
-            transition: opacity 0.3s;
+            mix-blend-mode: screen;
         }
 
         .poster-inner {
@@ -225,23 +278,23 @@
             height: auto;
             display: block;
             border-radius: 18px;
-            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
         }
 
         .poster-img.switching {
             opacity: 0;
-            transform: scale(0.98);
+            transform: scale(0.97);
         }
 
-        /* 苹果风格的触控提示标签 */
         .floating-badge {
             position: absolute;
             bottom: 16px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0, 0, 0, 0.65);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             border: 0.5px solid rgba(255, 255, 255, 0.25);
             color: #f5f5f7;
             font-size: 0.72rem;
@@ -251,11 +304,167 @@
             align-items: center;
             gap: 6px;
             pointer-events: none;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.6);
             white-space: nowrap;
         }
 
-        /* 底部苹果设计规范控制栏 (Dock Bar) */
+        /* 📸 4张精选大画幅 Apple Bento 展厅 */
+        .gallery-section {
+            margin-top: 55px;
+            width: 100%;
+        }
+
+        .section-header {
+            text-align: left;
+            margin-bottom: 22px;
+            padding-left: 4px;
+        }
+
+        .section-pill {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 1.2px;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(180deg, #FFFFFF 30%, #A1A1A6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-desc {
+            font-size: 0.88rem;
+            color: var(--apple-gray);
+            margin-top: 5px;
+            line-height: 1.4;
+        }
+
+        /* 4张图完美错落网格 */
+        .photo-bento-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .bento-card {
+            position: relative;
+            border-radius: 22px;
+            padding: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 0.5px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            cursor: pointer;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow 0.3s ease;
+        }
+
+        .bento-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .bento-card:active {
+            transform: scale(0.97) !important;
+        }
+
+        .bento-card.featured {
+            grid-column: span 2;
+            height: 250px;
+        }
+
+        .bento-card.duo {
+            height: 215px;
+        }
+
+        .bento-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 17px;
+            overflow: hidden;
+            position: relative;
+            background: #0d0d11;
+        }
+
+        .bento-inner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .bento-card:hover .bento-inner img {
+            transform: scale(1.04);
+        }
+
+        .photo-tag {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            background: rgba(0, 0, 0, 0.65);
+            border: 0.5px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 5px 12px;
+            border-radius: 980px;
+            color: #fff;
+            font-size: 0.72rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            pointer-events: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        .photo-tag i {
+            color: var(--accent-blue);
+            font-size: 0.7rem;
+        }
+
+        .photo-specular {
+            position: absolute;
+            inset: 0;
+            border-radius: 22px;
+            background: radial-gradient(circle 250px at var(--card-light-x, 50%) var(--card-light-y, 50%), rgba(255,255,255,0.2) 0%, transparent 65%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .bento-card:hover .photo-specular {
+            opacity: 1;
+        }
+
+        .photo-placeholder {
+            display: none;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            color: rgba(255,255,255,0.4);
+            font-size: 0.75rem;
+            background: rgba(255,255,255,0.03);
+        }
+
+        /* 底部 Dock 控制栏 */
         .dock-bar {
             position: fixed;
             bottom: 0;
@@ -263,15 +472,14 @@
             width: 100%;
             padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
             background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(30px) saturate(180%);
-            -webkit-backdrop-filter: blur(30px) saturate(180%);
-            border-top: 0.5px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(35px) saturate(180%);
+            -webkit-backdrop-filter: blur(35px) saturate(180%);
+            border-top: 0.5px solid rgba(255, 255, 255, 0.14);
             display: flex;
             justify-content: center;
             z-index: 90;
         }
 
-        /* 仿 Apple 发布会重点 CTA 按钮 */
         .btn-apple {
             width: 100%;
             max-width: 440px;
@@ -287,7 +495,7 @@
             justify-content: center;
             gap: 8px;
             cursor: pointer;
-            box-shadow: 0 4px 25px rgba(255, 255, 255, 0.18);
+            box-shadow: 0 4px 28px rgba(255, 255, 255, 0.22);
             transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             letter-spacing: -0.2px;
         }
@@ -297,14 +505,14 @@
             background: #e5e5ea;
         }
 
-        /* 苹果风格全屏弹窗 (iOS Sheet Style) */
+        /* 苹果 iOS 原生弹窗 */
         .apple-sheet {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+            background: rgba(0, 0, 0, 0.82);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
             z-index: 999;
             align-items: center;
             justify-content: center;
@@ -313,14 +521,14 @@
 
         .sheet-card {
             background: #1c1c1e;
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            border: 0.5px solid rgba(255, 255, 255, 0.16);
             width: 100%;
             max-width: 320px;
             border-radius: 28px;
             padding: 30px 24px;
             text-align: center;
             position: relative;
-            box-shadow: 0 30px 70px rgba(0,0,0,0.8);
+            box-shadow: 0 35px 80px rgba(0,0,0,0.9);
             transform: scale(0.9);
             animation: sheetIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
@@ -355,7 +563,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .qr-wrapper img {
@@ -365,7 +573,6 @@
             object-fit: cover;
         }
 
-        /* 全屏图片预览 */
         .fullscreen-viewer {
             display: none;
             position: fixed;
@@ -386,49 +593,110 @@
 </head>
 <body>
 
-<!-- 🍎 动态海报漫反射光影层 -->
+<!-- 🍎 纯黑高阶深空：海报环境融光 + 钛金暗涌 + 微晶星尘 -->
 <div class="ambient-backdrop">
-    <img src="poster1.jpg" id="bgPoster" class="bg-poster" alt="环境漫反射光晕">
+    <img src="poster1.jpg" id="bgLayer1" class="bg-layer" alt="漫反射图层1">
+    <img src="poster2.jpg" id="bgLayer2" class="bg-layer" alt="漫反射图层2">
+    
+    <!-- 华丽流动暗云层 -->
+    <div class="nebula-glow nebula-1"></div>
+    <div class="nebula-glow nebula-2"></div>
+    
+    <!-- 微晶星尘粒子画布 -->
+    <canvas id="starfieldCanvas"></canvas>
+
     <div class="ambient-vignette"></div>
 </div>
 
 <div class="container">
-    <!-- 苹果风格 Header -->
     <header class="hero-section">
         <div class="apple-pill">
             <i class="fa-solid fa-sparkles" style="color: #64d2ff; font-size: 0.7rem;"></i>
-            <span>ICE Student Union · 2026</span>
+            <span>SICE Student Union · 2026</span>
         </div>
         <h1 class="hero-title">信通院会宣传部</h1>
         <p class="hero-sub">灵感在此具象，杰作终被注视</p>
     </header>
 
-    <!-- iOS 物理滑动切换器 -->
+    <!-- iOS 物理分段切换器 -->
     <div class="segmented-control">
         <div class="segmented-slider" id="segSlider"></div>
         <div class="segment-btn active" onclick="switchPoster(1, this)">
-            <i class="fa-solid fa-feather"></i> 灵感 · 程晓恬
+            <i class="fa-solid fa-feather"></i> 灵感 · 程晓惦
         </div>
         <div class="segment-btn" onclick="switchPoster(2, this)">
             <i class="fa-solid fa-camera"></i> 纪实 · 幕后光影
         </div>
     </div>
 
-    <!-- 3D 陀螺仪光感展示台 -->
+    <!-- 3D 物理高光展示台 -->
     <div class="card-container" id="tiltContainer">
-        <div class="poster-card" onclick="openFullscreen()">
-            <!-- 表面光斑反射层 -->
+        <div class="poster-card" id="posterCard" onclick="openFullscreen(currentPosterSrc)">
             <div class="glass-specular" id="specularGlow"></div>
             
             <div class="poster-inner">
                 <img src="poster1.jpg" alt="信通宣传部招新海报" id="posterImg" class="poster-img">
                 <div class="floating-badge">
                     <i class="fa-solid fa-arrow-up-right-and-arrow-down-left-from-center"></i>
-                    <span>轻触展开高精细节</span>
+                    <span>轻触展开超精原图</span>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- 📸 4张精选大画幅 Apple Bento 展厅 -->
+    <section class="gallery-section">
+        <div class="section-header">
+            <div class="section-pill">
+                <i class="fa-solid fa-camera-retro"></i>
+                <span>Memories & Moments</span>
+            </div>
+            <h2 class="section-title">宣传部的高光印记</h2>
+            <p class="section-desc">从灵感碰撞的幕后筹备，到肆意欢笑的团建现场</p>
+        </div>
+
+        <div class="photo-bento-grid">
+            <!-- 照片 1：全宽大画幅头条（如年度大团建/合影） -->
+            <div class="bento-card featured" onclick="openFullscreen('activity1.jpg')">
+                <div class="photo-specular"></div>
+                <div class="bento-inner">
+                    <img src="activity1.jpg" alt="活动精选 1" onerror="showFallback(this)">
+                    <div class="photo-placeholder"><i class="fa-regular fa-image"></i><span>activity1.jpg</span></div>
+                    <div class="photo-tag"><i class="fa-solid fa-fire"></i><span>年度团建 · 欢聚时刻</span></div>
+                </div>
+            </div>
+
+            <!-- 照片 2：纵向高画幅特写（如部员灵感讨论/工作细节） -->
+            <div class="bento-card duo" onclick="openFullscreen('activity2.jpg')">
+                <div class="photo-specular"></div>
+                <div class="bento-inner">
+                    <img src="activity2.jpg" alt="活动精选 2" onerror="showFallback(this)">
+                    <div class="photo-placeholder"><i class="fa-regular fa-image"></i><span>activity2.jpg</span></div>
+                    <div class="photo-tag"><i class="fa-solid fa-wand-magic-sparkles"></i><span>灵感现场</span></div>
+                </div>
+            </div>
+
+            <!-- 照片 3：纵向高画幅特写（如单反摄影/摄像抓拍） -->
+            <div class="bento-card duo" onclick="openFullscreen('activity3.jpg')">
+                <div class="photo-specular"></div>
+                <div class="bento-inner">
+                    <img src="activity3.jpg" alt="活动精选 3" onerror="showFallback(this)">
+                    <div class="photo-placeholder"><i class="fa-regular fa-image"></i><span>activity3.jpg</span></div>
+                    <div class="photo-tag"><i class="fa-solid fa-camera"></i><span>台前幕后</span></div>
+                </div>
+            </div>
+
+            <!-- 照片 4：全宽大画幅压轴（如盛大晚会舞台/现场全景） -->
+            <div class="bento-card featured" onclick="openFullscreen('activity4.jpg')">
+                <div class="photo-specular"></div>
+                <div class="bento-inner">
+                    <img src="activity4.jpg" alt="活动精选 4" onerror="showFallback(this)">
+                    <div class="photo-placeholder"><i class="fa-regular fa-image"></i><span>activity4.jpg</span></div>
+                    <div class="photo-tag"><i class="fa-solid fa-star"></i><span>光影定格 · 盛大瞬间</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
 
 <!-- 底部控制栏 -->
@@ -439,7 +707,7 @@
     </button>
 </div>
 
-<!-- 二维码弹窗 -->
+<!-- 招新群弹窗 -->
 <div class="apple-sheet" id="appleSheet" onclick="closeSheet(event)">
     <div class="sheet-card">
         <div class="sheet-close" onclick="forceCloseSheet()"><i class="fa-solid fa-xmark"></i></div>
@@ -458,46 +726,79 @@
     </div>
 </div>
 
-<!-- 原图查看器 -->
+<!-- 通用大图查看器 -->
 <div class="fullscreen-viewer" id="viewer" onclick="closeFullscreen()">
-    <img src="poster1.jpg" id="viewerFullImg">
+    <img src="" id="viewerFullImg">
 </div>
 
 <script>
     let currentPoster = 1;
+    let currentPosterSrc = 'poster1.jpg';
     const tiltContainer = document.getElementById('tiltContainer');
+    const posterCard = document.getElementById('posterCard');
     const specularGlow = document.getElementById('specularGlow');
     const posterImg = document.getElementById('posterImg');
-    const bgPoster = document.getElementById('bgPoster');
+    const bgLayer1 = document.getElementById('bgLayer1');
+    const bgLayer2 = document.getElementById('bgLayer2');
     const viewerFullImg = document.getElementById('viewerFullImg');
     const segSlider = document.getElementById('segSlider');
 
-    // 1. 切换逻辑：主卡片 + 背景漫反射同步平滑切换
+    function triggerHaptic() {
+        if (navigator.vibrate) navigator.vibrate(12);
+    }
+
+    function showFallback(imgEl) {
+        imgEl.style.display = 'none';
+        imgEl.nextElementSibling.style.display = 'flex';
+    }
+
+    // 1. 切换逻辑
     function switchPoster(id, btnElement) {
         if(currentPoster === id) return;
         currentPoster = id;
+        triggerHaptic();
 
-        // 按钮高亮与滑块移动
         document.querySelectorAll('.segment-btn').forEach(btn => btn.classList.remove('active'));
         btnElement.classList.add('active');
         segSlider.style.transform = id === 1 ? 'translateX(0%)' : 'translateX(100%)';
 
-        // 海报微动效切换
         posterImg.classList.add('switching');
-        bgPoster.style.opacity = '0.3'; // 背景光晕轻微淡出缓冲
+
+        if (id === 1) {
+            bgLayer1.style.opacity = '1';
+            bgLayer2.style.opacity = '0';
+        } else {
+            bgLayer1.style.opacity = '0';
+            bgLayer2.style.opacity = '1';
+        }
 
         setTimeout(() => {
-            const newSrc = `poster${id}.jpg`;
-            posterImg.src = newSrc;
-            viewerFullImg.src = newSrc;
-            bgPoster.src = newSrc; // 背景光晕换成对应海报
-
+            currentPosterSrc = `poster${id}.jpg`;
+            posterImg.src = currentPosterSrc;
             posterImg.classList.remove('switching');
-            bgPoster.style.opacity = '1';
-        }, 200);
+        }, 220);
     }
 
-    // 2. 核心：高级 3D 悬浮与真实光影物理跟踪
+    // 2. 物理光影计算
+    function updatePhysicsLight(x, y, rect) {
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const rotateX = ((y - centerY) / centerY) * -7.5;
+        const rotateY = ((x - centerX) / centerX) * 7.5;
+
+        const shadowX = -rotateY * 3.5;
+        const shadowY = 25 + rotateX * 3.5;
+
+        tiltContainer.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        posterCard.style.setProperty('--shadow-x', `${shadowX}px`);
+        posterCard.style.setProperty('--shadow-y', `${shadowY}px`);
+
+        specularGlow.style.setProperty('--light-x', `${x}px`);
+        specularGlow.style.setProperty('--light-y', `${y}px`);
+        specularGlow.style.setProperty('--angle', `${105 + rotateY * 3}deg`);
+    }
+
     function handlePointerMove(e) {
         const rect = tiltContainer.getBoundingClientRect();
         const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -506,21 +807,13 @@
         const x = clientX - rect.left;
         const y = clientY - rect.top;
 
-        // 极限限制在 ±7deg，保持苹果克制质感
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const rotateX = ((y - centerY) / centerY) * -7;
-        const rotateY = ((x - centerX) / centerX) * 7;
-
-        tiltContainer.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-
-        // 动态光斑追踪
-        specularGlow.style.setProperty('--light-x', `${x}px`);
-        specularGlow.style.setProperty('--light-y', `${y}px`);
+        requestAnimationFrame(() => updatePhysicsLight(x, y, rect));
     }
 
     function resetTilt() {
         tiltContainer.style.transform = `rotateX(0deg) rotateY(0deg)`;
+        posterCard.style.setProperty('--shadow-x', `0px`);
+        posterCard.style.setProperty('--shadow-y', `30px`);
     }
 
     tiltContainer.addEventListener('mousemove', handlePointerMove);
@@ -528,8 +821,85 @@
     tiltContainer.addEventListener('touchmove', handlePointerMove, {passive: true});
     tiltContainer.addEventListener('touchend', resetTilt);
 
-    // 3. 弹窗控制
+    if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission !== 'function') {
+        window.addEventListener('deviceorientation', (e) => {
+            if (!e.gamma || !e.beta) return;
+            const rect = tiltContainer.getBoundingClientRect();
+            const tiltX = Math.min(Math.max(e.gamma, -25), 25);
+            const tiltY = Math.min(Math.max(e.beta - 45, -25), 25);
+            
+            const simulatedX = (tiltX / 25 + 1) * 0.5 * rect.width;
+            const simulatedY = (tiltY / 25 + 1) * 0.5 * rect.height;
+            updatePhysicsLight(simulatedX, simulatedY, rect);
+        });
+    }
+
+    // 3. 画廊滚动观察器 (Scroll Observer)
+    const bentoCards = document.querySelectorAll('.bento-card');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if(entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.15 });
+
+    bentoCards.forEach(card => {
+        observer.observe(card);
+
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--card-light-x', `${x}px`);
+            card.style.setProperty('--card-light-y', `${y}px`);
+        });
+    });
+
+    // 4. ✨ 华丽微晶星尘粒子引擎 (Starfield Engine)
+    const canvas = document.getElementById('starfieldCanvas');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+
+    function initStars() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        stars = [];
+        const count = Math.floor((canvas.width * canvas.height) / 16000); // 依分辨率动态计算适中星尘数量
+        for(let i = 0; i < count; i++) {
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 1.2 + 0.3,
+                alpha: Math.random() * 0.7 + 0.2,
+                speed: Math.random() * 0.25 + 0.05,
+                pulse: Math.random() * 0.02 + 0.005
+            });
+        }
+    }
+
+    function renderStars() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        stars.forEach(star => {
+            star.alpha += Math.sin(Date.now() * star.pulse) * 0.008;
+            star.y -= star.speed;
+            if(star.y < 0) star.y = canvas.height;
+
+            ctx.fillStyle = `rgba(255, 255, 255, ${Math.max(0.15, Math.min(0.85, star.alpha))})`;
+            ctx.beginPath();
+            ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+            ctx.fill();
+        });
+        requestAnimationFrame(renderStars);
+    }
+
+    window.addEventListener('resize', initStars);
+    initStars();
+    renderStars();
+
+    // 5. 弹窗控制
     function openSheet() {
+        triggerHaptic();
         document.getElementById('appleSheet').style.display = 'flex';
     }
 
@@ -541,7 +911,9 @@
         if(e.target.id === 'appleSheet') forceCloseSheet();
     }
 
-    function openFullscreen() {
+    function openFullscreen(src) {
+        triggerHaptic();
+        viewerFullImg.src = src;
         document.getElementById('viewer').style.display = 'flex';
     }
 
